@@ -1,10 +1,10 @@
 ### Building and running your application
 
 For development use
-`docker compose -f .\compose.dev.yaml up -d`
+`docker compose -f .\compose.dev.yaml up`
 
 For production use
-`docker compose -f .\compose.pro.yaml up -d`
+`docker compose -f .\compose.pro.yaml up`
 
 
 

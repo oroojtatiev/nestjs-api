@@ -1,5 +1,6 @@
 services:
   postgres:
+    container_name: postgres
     image: postgres
     restart: always
     environment:
@@ -11,6 +12,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
   app:
+    container_name: chat_api
     depends_on:
       - postgres
     environment:
