@@ -12,8 +12,7 @@ export class UserService {
   private salt = 10
 
   constructor(
-    @InjectRepository(UserEntity)
-    private readonly userRepo: Repository<UserEntity>
+    @InjectRepository(UserEntity) private readonly userRepo: Repository<UserEntity>
   ) {}
 
   create(user: CreateUser): Observable<User> {
@@ -47,6 +46,13 @@ export class UserService {
     return from(paginate<UserEntity>(this.userRepo, options))
   }
 
+  findOne(email: string): Observable<UserEntity | null> {
+    return from(this.userRepo.findOne({
+      where: {email},
+      select: ['id', 'email', 'password', 'username']
+    }))
+  }
+
   hashPassword(password: string): Observable<string> {
     const hash = bcrypt.hashSync(password, this.salt)
     return of(hash)
@@ -54,9 +60,7 @@ export class UserService {
 
   checkEmailExist(email: string): Observable<boolean> {
     return from(this.userRepo.findOne({
-      where: {
-        email,
-      },
+      where: {email},
     }))
       .pipe(
         map((user: UserEntity) => user !== null)

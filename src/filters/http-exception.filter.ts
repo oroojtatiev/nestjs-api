@@ -6,7 +6,6 @@ import {Response} from 'express'
 import {EntityNotFoundError} from 'typeorm'
 import {ExceptionResponse} from '../types/response'
 
-
 @Catch()
 export class ExceptionFilter implements NestExceptionFilter {
   private readonly logger = new Logger(ExceptionFilter.name)
