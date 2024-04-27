@@ -53,7 +53,7 @@ export class AuthService {
 
   authorize(user: UserEntity): Observable<string> {
     const payload = {
-      sub: user.id,
+      id: user.id,
       username: user.username,
     }
     const jwtOptions: JwtSignOptions = {

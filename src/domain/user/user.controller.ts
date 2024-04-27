@@ -1,10 +1,11 @@
-import {Body, Controller, Get, HttpStatus, Post, Query, UsePipes} from '@nestjs/common'
+import {Body, Controller, Get, HttpStatus, Post, Query, UseGuards, UsePipes} from '@nestjs/common'
 import {UserService} from './user.service'
 import {map} from 'rxjs'
 import {Pagination} from 'nestjs-typeorm-paginate'
 import {CreateUser, createUserSchema, User} from './user.dto'
 import {ZodValidationPipe} from '../../pipes/ZodValidation.pipe'
 import {ObservableResponse} from '../../types/response'
+import {AuthGuard} from '../../guards/auth.guard'
 
 @Controller('user')
 export class UserController {
@@ -16,6 +17,7 @@ export class UserController {
   ) {}
 
   @Post()
+  @UseGuards(AuthGuard)
   @UsePipes(new ZodValidationPipe(createUserSchema))
   create(@Body() body: CreateUser): ObservableResponse<User> {
     return this.userService.create(body)
@@ -28,6 +30,7 @@ export class UserController {
       )
   }
 
+  @UseGuards(AuthGuard)
   @Get()
   findAll(
     @Query('page') page: number = this.defaultPage,

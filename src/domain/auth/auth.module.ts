@@ -5,13 +5,24 @@ import {AuthController} from './auth.controller'
 import {AuthService} from './auth.service'
 import {UserService} from '../user/user.service'
 import {UserEntity} from '../user/user.entity'
+import {ConfigModule, ConfigService} from '@nestjs/config'
+import {JwtModuleOptions} from '@nestjs/jwt/dist/interfaces/jwt-module-options.interface'
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserEntity]),
-    JwtModule.register({
-      global: true,
-      signOptions: { expiresIn: '60s' },
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (config: ConfigService): Promise<JwtModuleOptions> => {
+        return {
+          // global: true,
+          secret: config.get('JWT_SECRET'),
+          signOptions: {
+            expiresIn: '60s',
+          },
+        }
+      }
     }),
   ],
   controllers: [AuthController],
