@@ -37,10 +37,7 @@ export class AuthService {
                     )
                 }
 
-                return of({
-                  status: HttpStatus.UNAUTHORIZED,
-                  message: 'Email or password is not correct'
-                })
+                throw new HttpException('Email or password is not correct', HttpStatus.UNAUTHORIZED)
               })
             )
         })

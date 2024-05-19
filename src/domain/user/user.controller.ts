@@ -17,7 +17,6 @@ export class UserController {
   ) {}
 
   @Post()
-  @UseGuards(AuthGuard)
   @UsePipes(new ZodValidationPipe(createUserSchema))
   create(@Body() body: CreateUser): ObservableResponse<User> {
     return this.userService.create(body)
