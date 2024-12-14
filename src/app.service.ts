@@ -1,10 +1,15 @@
-import {Injectable} from '@nestjs/common'
+import {HttpStatus, Injectable} from '@nestjs/common'
+import {ApiResponse} from './types/response'
 
 @Injectable()
 export class AppService {
-  getHello(): object {
+  getHello(): ApiResponse<{title: string}> {
     return {
-      title: 'Hello World!',
+      data: {
+        title: 'Hello World!',
+      },
+      status: HttpStatus.OK,
+
     }
   }
 }
