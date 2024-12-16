@@ -1,18 +1,16 @@
 import {HttpException, HttpStatus, Injectable} from '@nestjs/common'
-import {JwtService, JwtSignOptions} from '@nestjs/jwt'
+import {JwtService} from '@nestjs/jwt'
 import {from, map, Observable, of, switchMap} from 'rxjs'
 import * as bcrypt from 'bcrypt'
 import {UserService} from '../user/user.service'
 import {Login} from './auth.dto'
 import {UserEntity} from '../user/user.entity'
-import {ConfigService} from '@nestjs/config'
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
-    private configService: ConfigService,
   ) {}
 
   login({email, password}: Login): Observable<ApiResponse<string>> {
@@ -52,10 +50,7 @@ export class AuthService {
       id: user.id,
       username: user.username,
     }
-    const jwtOptions: JwtSignOptions = {
-      secret: this.configService.get('JWT_SECRET'),
-    }
 
-    return from(this.jwtService.signAsync(payload, jwtOptions))
+    return from(this.jwtService.signAsync(payload))
   }
 }

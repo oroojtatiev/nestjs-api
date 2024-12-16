@@ -1,7 +1,7 @@
 import {Module} from '@nestjs/common'
-import {ConfigModule, ConfigService} from '@nestjs/config'
+import {ConfigService} from '@nestjs/config'
 import {TypeOrmModule} from '@nestjs/typeorm'
-import {JwtModule, JwtService} from '@nestjs/jwt'
+import {JwtModule} from '@nestjs/jwt'
 import {JwtModuleOptions} from '@nestjs/jwt/dist/interfaces/jwt-module-options.interface'
 import {AuthController} from './auth.controller'
 import {AuthService} from './auth.service'
@@ -12,11 +12,10 @@ import {UserEntity} from '../user/user.entity'
   imports: [
     TypeOrmModule.forFeature([UserEntity]),
     JwtModule.registerAsync({
-      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (config: ConfigService): Promise<JwtModuleOptions> => {
         return {
-          // global: true,
+          global: true,
           secret: config.get('JWT_SECRET'),
           signOptions: {
             expiresIn: '60s',
@@ -26,6 +25,6 @@ import {UserEntity} from '../user/user.entity'
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, UserService, JwtService],
+  providers: [AuthService, UserService],
 })
 export class AuthModule {}
