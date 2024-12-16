@@ -23,17 +23,20 @@ export class UserService {
             throw new HttpException('Email is already exist', HttpStatus.CONFLICT)
           }
 
-          const hash = this.hashPassword(user.password)
-
-          const data = {
-            ...user,
-            email: user.email.toLowerCase(),
-            password: hash,
-          }
-
-          return from(this.userRepo.save(data))
+          return this.hashPassword(user.password)
             .pipe(
-              map(({password, ...user}: UserEntity) => user)
+              switchMap(hash => {
+                const data = {
+                  ...user,
+                  email: user.email.toLowerCase(),
+                  password: hash,
+                }
+
+                return from(this.userRepo.save(data))
+                  .pipe(
+                    map(({password, ...user}: UserEntity) => user)
+                  )
+              })
             )
         })
       )
@@ -50,8 +53,8 @@ export class UserService {
     }))
   }
 
-  hashPassword(password: string): string {
-    return bcrypt.hashSync(password, this.salt)
+  hashPassword(password: string): Observable<string> {
+    return from(bcrypt.hash(password, this.salt))
   }
 
   checkEmailExist(email: string): Observable<boolean> {
