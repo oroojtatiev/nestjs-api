@@ -5,7 +5,6 @@ import * as bcrypt from 'bcrypt'
 import {UserService} from '../user/user.service'
 import {Login} from './auth.dto'
 import {UserEntity} from '../user/user.entity'
-import {ObservableResponse} from '../../types/response'
 import {ConfigService} from '@nestjs/config'
 
 @Injectable()
@@ -16,7 +15,7 @@ export class AuthService {
     private configService: ConfigService,
   ) {}
 
-  login({email, password}: Login): ObservableResponse<string> {
+  login({email, password}: Login): Observable<ApiResponse<string>> {
     return from(this.userService.findOne(email))
       .pipe(
         switchMap((user: UserEntity | null) => {
@@ -49,7 +48,7 @@ export class AuthService {
   }
 
   authorize(user: UserEntity): Observable<string> {
-    const payload = {
+    const payload: IToken = {
       id: user.id,
       username: user.username,
     }

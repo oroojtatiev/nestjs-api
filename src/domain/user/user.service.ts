@@ -1,7 +1,7 @@
 import {HttpException, HttpStatus, Injectable} from '@nestjs/common'
 import {InjectRepository} from '@nestjs/typeorm'
 import {IPaginationOptions, paginate, Pagination} from 'nestjs-typeorm-paginate'
-import {from, map, Observable, of, switchMap} from 'rxjs'
+import {from, map, Observable, switchMap} from 'rxjs'
 import {Repository} from 'typeorm'
 import * as bcrypt from 'bcrypt'
 import {UserEntity} from './user.entity'
@@ -23,20 +23,17 @@ export class UserService {
             throw new HttpException('Email is already exist', HttpStatus.CONFLICT)
           }
 
-          return this.hashPassword(user.password)
-            .pipe(
-              switchMap(hash => {
-                const data = {
-                  ...user,
-                  email: user.email.toLowerCase(),
-                  password: hash,
-                }
+          const hash = this.hashPassword(user.password)
 
-                return from(this.userRepo.save(data))
-                  .pipe(
-                    map(({password, ...user}: UserEntity) => user)
-                  )
-              })
+          const data = {
+            ...user,
+            email: user.email.toLowerCase(),
+            password: hash,
+          }
+
+          return from(this.userRepo.save(data))
+            .pipe(
+              map(({password, ...user}: UserEntity) => user)
             )
         })
       )
@@ -53,9 +50,8 @@ export class UserService {
     }))
   }
 
-  hashPassword(password: string): Observable<string> {
-    const hash = bcrypt.hashSync(password, this.salt)
-    return of(hash)
+  hashPassword(password: string): string {
+    return bcrypt.hashSync(password, this.salt)
   }
 
   checkEmailExist(email: string): Observable<boolean> {

@@ -1,12 +1,12 @@
 import {Module} from '@nestjs/common'
+import {ConfigModule, ConfigService} from '@nestjs/config'
 import {TypeOrmModule} from '@nestjs/typeorm'
 import {JwtModule, JwtService} from '@nestjs/jwt'
+import {JwtModuleOptions} from '@nestjs/jwt/dist/interfaces/jwt-module-options.interface'
 import {AuthController} from './auth.controller'
 import {AuthService} from './auth.service'
 import {UserService} from '../user/user.service'
 import {UserEntity} from '../user/user.entity'
-import {ConfigModule, ConfigService} from '@nestjs/config'
-import {JwtModuleOptions} from '@nestjs/jwt/dist/interfaces/jwt-module-options.interface'
 
 @Module({
   imports: [

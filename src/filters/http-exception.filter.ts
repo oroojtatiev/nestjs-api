@@ -4,7 +4,6 @@ import {
 import {ConfigService} from '@nestjs/config'
 import {Response} from 'express'
 import {EntityNotFoundError} from 'typeorm'
-import {ExceptionResponse} from '../types/response'
 
 @Catch()
 export class ExceptionFilter implements NestExceptionFilter {
