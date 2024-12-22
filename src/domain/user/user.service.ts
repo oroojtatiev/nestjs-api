@@ -32,10 +32,11 @@ export class UserService {
                   password: hash,
                 }
 
-                return from(this.userRepo.save(data))
-                  .pipe(
-                    map(({password, ...user}: UserEntity) => user)
-                  )
+                const promise = this.userRepo.save(data)
+
+                return from(promise).pipe(
+                  map(({password, ...user}: UserEntity) => user)
+                )
               })
             )
         })
@@ -43,26 +44,36 @@ export class UserService {
   }
 
   findAll(options: IPaginationOptions): Observable<Pagination<UserEntity>> {
-    return from(paginate<UserEntity>(this.userRepo, options))
+    const promise = paginate<UserEntity>(this.userRepo, options)
+    return from(promise)
   }
 
   findOne(email: string): Observable<UserEntity | null> {
-    return from(this.userRepo.findOne({
+    const promise = this.userRepo.findOne({
       where: {email},
       select: ['id', 'email', 'password', 'username']
-    }))
+    })
+
+    return from(promise)
+  }
+
+  checkUserExist(id: number): Observable<User> {
+    const promise = this.userRepo.findOneByOrFail({id})
+    return from(promise).pipe()
   }
 
   hashPassword(password: string): Observable<string> {
-    return from(bcrypt.hash(password, this.salt))
+    const promise = bcrypt.hash(password, this.salt)
+    return from(promise)
   }
 
   checkEmailExist(email: string): Observable<boolean> {
-    return from(this.userRepo.findOne({
+    const promise = this.userRepo.findOne({
       where: {email},
-    }))
-      .pipe(
-        map((user: UserEntity) => user !== null)
-      )
+    })
+
+    return from(promise).pipe(
+      map((user: UserEntity) => user !== null)
+    )
   }
 }

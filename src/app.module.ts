@@ -5,6 +5,7 @@ import {AppController} from './app.controller'
 import {AppService} from './app.service'
 import {UserModule} from './domain/user/user.module'
 import {AuthModule} from './domain/auth/auth.module'
+import * as process from 'node:process'
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import {AuthModule} from './domain/auth/auth.module'
         password: configService.get('POSTGRES_PASSWORD'),
         database: configService.get('POSTGRES_DB'),
         autoLoadEntities: true,
-        synchronize: true,
+        synchronize: false,
+        logging: process.env.NODE_ENV === 'development'
       }),
       inject: [ConfigService],
     }),

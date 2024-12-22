@@ -18,7 +18,7 @@ import {UserEntity} from '../user/user.entity'
           global: true,
           secret: config.get('JWT_SECRET'),
           signOptions: {
-            expiresIn: '60s',
+            expiresIn: '1h',
           },
         }
       }

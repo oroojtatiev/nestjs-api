@@ -48,6 +48,7 @@ export class AuthService {
   authorize(user: UserEntity): Observable<string> {
     const payload: IToken = {
       id: user.id,
+      email: user.email,
       username: user.username,
     }
 
